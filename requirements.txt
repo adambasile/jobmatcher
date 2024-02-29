@@ -1,0 +1,8 @@
+polars
+
+# dev stuff
+pytest
+coverage
+mypy
+black
+ruff

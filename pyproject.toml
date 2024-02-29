@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jobmatcher"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Adam Basile", email = "basile.adam@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "polars"
+]
+
+[tool.hatch.version]
+path = "src/jobmatcher/__about__.py"
+
+[tool.coverage.run]
+source_pkgs = ["jobmatcher", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/jobmatcher/__about__.py",
+]
+
+[tool.coverage.paths]
+jobmatcher = ["src/jobmatcher", "*/jobmatcher/src/jobmatcher"]
+tests = ["tests", "*/jobmatcher/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+strict = true
+
+[tool.black]
+line-length = 120
