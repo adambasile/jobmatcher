@@ -39,9 +39,22 @@ def match_jobs_from_frames(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.D
     :return: pl.DataFrame with columns:
         ["jobseeker_id" ,"jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
     """
+    check_required_columns(jobseekers, jobs)
     jobseekers, jobs = preprocess_inputs(jobseekers, jobs)
     job_matches = match_to_jobs(jobseekers, jobs)
     return format_for_output(job_matches, jobseekers, jobs)
+
+
+def check_required_columns(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> None:
+    jobseekers_missing = [col for col in ["id", "name", "skills"] if col not in jobseekers.columns]
+    jobs_missing = [col for col in ["id", "name", "required_skills"] if col not in jobs.columns]
+    msg = []
+    if jobseekers_missing:
+        msg.append(f"Jobseekers is missing columns: {jobseekers_missing}")
+    if jobs_missing:
+        msg.append(f"Jobs is missing columns: {jobs_missing}")
+    if msg:
+        raise ValueError(". ".join(msg))
 
 
 def preprocess_inputs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> Tuple[pl.DataFrame, pl.DataFrame]:
