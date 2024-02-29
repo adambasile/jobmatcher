@@ -43,13 +43,13 @@ ruff check
 mypy src
 ```
 
-Pytest is used to run tests. Make sure you run it from project root
+`pytest` is used to run tests. Make sure you run it from project root
 
 ```console
 pytest
 ```
 
-Run it with coverage to get a report on test coverage
+Run it with `coverage` to get a report on test coverage
 
 ```console
 $ coverage run -m pytest
@@ -63,6 +63,12 @@ tests\__init__.py                0      0      0      0   100%
 tests\test_matcher.py            8      0      0      0   100%
 --------------------------------------------------------------
 TOTAL                           40      3      0      0    92%
+```
+
+`requirements.txt` is generated from `requirements-dev.in` using `uv`
+
+```console
+uv pip compile requirements-dev.in -o requirements.txt
 ```
 
 ## License
