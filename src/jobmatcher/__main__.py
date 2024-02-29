@@ -18,7 +18,7 @@ if __name__ == "__main__":
         "--jobs", type=str, help='Path to csv with ["id", "title", "required_skills"] columns', required=True
     )
     parser.add_argument(
-        "--output", type=str, help="Path to output csv. If omitted output will be sent to stdout", default=sys.stdout
+        "--output", type=str, help="Path to output csv. If omitted output will be sent to stdout.", default=sys.stdout
     )
     args = parser.parse_args()
     matched = match_jobs_from_csv(args.jobseekers, args.jobs)
