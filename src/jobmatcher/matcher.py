@@ -29,31 +29,6 @@ def match_jobs_from_frames(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.D
     return format_for_output(job_matches, jobseekers, jobs)
 
 
-def format_for_output(job_matches: pl.DataFrame, jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.DataFrame:
-    messy_output = job_matches.join(jobs, on="job_id").join(jobseekers, on="jobseeker_id")
-    pretty_formatted = messy_output.select(
-        pl.col(
-            "jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"
-        )
-    ).sort(
-        [pl.col("jobseeker_id"), pl.col("matching_skill_percent"), pl.col("job_id")],
-        descending=[False, True, False],
-    )
-    return pretty_formatted
-
-
-def match_to_jobs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.DataFrame:
-    num_matched_skills = (
-        jobseekers.explode("skills")
-        .join(jobs.explode("required_skills"), left_on="skills", right_on="required_skills")
-        .group_by([pl.col("jobseeker_id", "job_id")])
-        .agg(pl.len().alias("matching_skill_count"))
-        .join(jobs.select(pl.col("job_id", "num_skills")), on="job_id")
-        .with_columns(((100 * pl.col("matching_skill_count")) / pl.col("num_skills")).alias("matching_skill_percent"))
-    )
-    return num_matched_skills
-
-
 def preprocess_inputs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> Tuple[pl.DataFrame, pl.DataFrame]:
     """
     :param jobseekers:
@@ -80,3 +55,28 @@ def preprocess_inputs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> Tuple[pl.
 def split_and_strip(col: str) -> pl.Expr:
     # this splits on commas and then strips whitespace from each element
     return pl.col(col).str.split(",").list.eval(pl.element().str.strip_chars())
+
+
+def match_to_jobs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.DataFrame:
+    num_matched_skills = (
+        jobseekers.explode("skills")
+        .join(jobs.explode("required_skills"), left_on="skills", right_on="required_skills")
+        .group_by([pl.col("jobseeker_id", "job_id")])
+        .agg(pl.len().alias("matching_skill_count"))
+        .join(jobs.select(pl.col("job_id", "num_skills")), on="job_id")
+        .with_columns(((100 * pl.col("matching_skill_count")) / pl.col("num_skills")).alias("matching_skill_percent"))
+    )
+    return num_matched_skills
+
+
+def format_for_output(job_matches: pl.DataFrame, jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.DataFrame:
+    messy_output = job_matches.join(jobs, on="job_id").join(jobseekers, on="jobseeker_id")
+    pretty_formatted = messy_output.select(
+        pl.col(
+            "jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"
+        )
+    ).sort(
+        [pl.col("jobseeker_id"), pl.col("matching_skill_percent"), pl.col("job_id")],
+        descending=[False, True, False],
+    )
+    return pretty_formatted
