@@ -35,18 +35,34 @@ options:
 
 ## Developing
 
-Pytest is used to run tests. Make sure you run it from project root
-
-```console
-pytest
-```
-
 The following linters and checkers are run on the code
 
 ```console
 black .
 ruff check
 mypy src
+```
+
+Pytest is used to run tests. Make sure you run it from project root
+
+```console
+pytest
+```
+
+Run it with coverage to get a report on test coverage
+
+```console
+$ coverage run -m pytest
+$ coverage report
+Name                         Stmts   Miss Branch BrPart  Cover
+--------------------------------------------------------------
+src\jobmatcher\__init__.py       0      0      0      0   100%
+src\jobmatcher\__main__.py       3      3      0      0     0%
+src\jobmatcher\matcher.py       29      0      0      0   100%
+tests\__init__.py                0      0      0      0   100%
+tests\test_matcher.py            8      0      0      0   100%
+--------------------------------------------------------------
+TOTAL                           40      3      0      0    92%
 ```
 
 ## License
