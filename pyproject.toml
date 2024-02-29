@@ -39,7 +39,6 @@ pythonpath = [
 [tool.coverage.run]
 source_pkgs = ["jobmatcher", "tests"]
 branch = true
-parallel = true
 omit = [
   "src/jobmatcher/__about__.py",
 ]
