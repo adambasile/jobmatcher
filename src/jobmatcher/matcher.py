@@ -93,6 +93,8 @@ def match_to_jobs(jobseekers: pl.DataFrame, jobs: pl.DataFrame) -> pl.DataFrame:
     :return: pl.DataFrame with columns:
          ["jobseeker_id", "job_id", "matching_skill_count", "required_skill_count", "matching_skill_percent"]
     """
+    # first explode jobseekers and jobs so each row is a job(seeker)-skill combination, then join on skills,
+    # then group by jobseeker and job to get the number of matching skills each jobseeker has for each job
     num_matched_skills = (
         jobseekers.explode("skills")
         .join(jobs.explode("required_skills"), left_on="skills", right_on="required_skills")
